@@ -202,3 +202,45 @@ Como buenos desarrolladores, ya debemos tener creado un repositorio para trabaja
     ```
 
     >Cada vez que modifiquemos el modelo de datos, crearemos una nueva migración y la aplicaremos a la base de datos para que se actualice de acuerdo a nuestro modelo.
+
+9. **Datos Iniciales de Aplicación**
+
+    - Para contar con un set de datos iniciales en nuestra aplicación, primero debemos crear un directorio fixtures dentro de nuestra aplicación.
+    - Una vez que hemos creado el directorio, crearemos archivos con la data inicial en formato JSON, XML o YAML con su extensión correspondiente.
+    - Para insertar esa data en la base de datos, ejecutaremos el siguiente comando mediante terminal:
+    ```
+    python manage.py loaddata mi_archivo.extension
+    ```
+
+    - Si lo que se desea es respaldar todos los datos desde la base de datos en un archivo, ejecutaremos el siguiente comando mediante terminal:
+    ```
+    python manage.py dumpdata > mi_base_datos.json
+    ```
+
+    - Si se necesita respaldar todos los datos de nombre_aplicacion, se hará ejecutando el siguiente comando mediante terminal:
+    ```
+    python manage.py dumpdata nombre_aplicacion > nombre_aplicacion_data.json
+    ```
+
+    - Si se necesita respaldar los datos de un modelo particular, se hará ejecutando el siguiente comando mediante terminal:
+    ```
+    python manage.py dumpdata nombre_aplicacion.MiModelo > MiModelo_data.json
+    ```
+
+10. **Manejo de Base de Datos**
+    - Una base de datos en entornos profesionales debe controlarse con usuarios específicos con permisos otorgados explícitamente. Esto lo lograremos de la siguiente forma:
+
+    - Crear usuario remoto 'Usuario' con contraseña 'mi_contraseña'
+    ```
+    CREATE USER 'Usuario'@'%' IDENTIFIED BY 'mi_contraseña';
+    ```
+
+    - Conceder privilegios para una base de datos específica al usuario remoto 'Usuario' (por ejemplo, 'mi_base_datos')
+    ```
+    GRANT ALL PRIVILEGES ON mi_base_datos.* TO 'Usuario'@'%';
+    ```
+
+    - Aplicar los cambios de privilegios (permisos)
+    ```
+    FLUSH PRIVILEGES;
+    ```
