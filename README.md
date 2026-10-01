@@ -306,6 +306,24 @@ Como buenos desarrolladores, ya debemos tener creado un repositorio para trabaja
 
     Este comando nos irá pidiendo los datos del usuario medainte terminal.
     Una vez que se haya creado, podemos revisarlo en la tabla *auth_user* de Django.
+
+13. **Django Rest Framework**
+    
+    - Con todo lo anterior ejecutado/construido, instalaremos la librería *djangorestframework* que contiene todas las herramientas  disponibles dentro de Django para controlar completamente nuestro modelo de datos.
+    Lo instalaremos ejecutando el siguiente comando mediante el terminal:
+    ```
+    pip install djangorestframework
+    ```
+
+    - Una vez que se ha instalado, debemos agregarlo a la sección *INSTALLED_APPS* de nuestro *settings.py*, de la siguiente forma:
+    ```
+    INSTALLED_APPS = [
+        ...
+        'rest_framework',
+        ...
+    ]
+    ```
+
 ___   
 > Para poder mantener las librerias actualizadas y estandarizadas para todo el equipo de desarrollo, crearemos un archivo de requerimientos con el siguiente comando:
 ```
