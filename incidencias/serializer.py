@@ -1,8 +1,5 @@
 from rest_framework import serializers
-from .models import Pais
-from .models import Region
-from .models import Provincia
-from .models import Comuna
+from .models import Pais, Region, Provincia, Comuna
 from .models import Direccion
 from .models import Biblioteca
 from .models import Autor
@@ -21,5 +18,14 @@ from .models import Prestamo
 class PaisSerializer(serializers.ModelSerializer):
     class Meta:
         model = Pais
-        # fields = '__all__' # Esta definición trae todos los campos del modelo al serializador
         fields = ('nombre','nacionalidad','iso_2','iso_3')
+
+class RegionSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Region
+        fields = ('codigo','region')
+
+class ProvinciaSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Provincia
+        fields = ('codigo','provincia','region')
