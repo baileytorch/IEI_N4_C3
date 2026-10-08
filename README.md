@@ -235,7 +235,36 @@ Como buenos desarrolladores, ya debemos tener creado un repositorio para trabaja
     pip install SQLAlchemy mysqlclient
     ```
 
-10. **Desacoplar Datos Sensibles**
+10. **Datos Iniciales de la Aplicación**
+
+    Al estar definida nuestra base de datos y aplicadas las migraciones de nuestro modelo de datos, tenemos la estructura de datos requerida para alojar nuestros registros.
+    En este punto será importante contra con datos genéricos iniciales de la aplicación, como listas o parámetros que deben estar pre-cargados.
+    Esto lo lograremos de la siguiente forma:
+    - Dentro del directorio de nuestra aplicación crearemos un nuevo directorio *fixtures* que es donde guardaremos los archivos con datos en formato *JSON* para que sean cargados en la DB.
+    - Para cada dato requerido generaremos un archivo *.json* que contendrá los datos necesarios.
+    - La estructura de este archivo dependerá de nuestro modelo, pero siguiendo el siguiente patrón:
+    ```
+    [
+        {
+            "model": "nombre_aplicacion.nombre_modelo",
+            "pk": 1,
+            "fields": {
+                "atributo_1": "01",
+                "atributo_2": "Atributo 1"
+            }
+        },
+        {
+            "model": "nombre_aplicacion.nombre_modelo",
+            "pk": 2,
+            "fields": {
+                "atributo_1": "02",
+                "atributo_2": "Atributo 2"
+            }
+        }
+    ]
+    ```
+
+11. **Desacoplar Datos Sensibles**
 
     Ahora que ya estamos trabajando con una DB externa, debemos usar credenciales para conectarnos a esta nueva DB. Cualquier credencial o dato sensible no debería existir en código, incluyendo la *'SECRET_KEY'* de Django, por lo que debemos *DESACOPLAR* esos datos y ponerlos en un archivo de ambiente.
 
@@ -263,7 +292,7 @@ Como buenos desarrolladores, ya debemos tener creado un repositorio para trabaja
 
     El mismo procedimiento debemos usar para procesar la información de la base de datos.
 
-11. **Instalación Django Rest Framework**
+12. **Instalación Django Rest Framework**
 
     Django Rest Framework es una librería que contiene muchas herramientas que usaremos en nuestro desarrollo django, como los serializadores.
     Para instalarlo ejecutaremos el siguiente comando mediante terminal:
@@ -280,7 +309,7 @@ Como buenos desarrolladores, ya debemos tener creado un repositorio para trabaja
     ]
     ```
     
-12. **Incorporar Modelo de Datos al administrador de Django**
+13. **Incorporar Modelo de Datos al administrador de Django**
 
     En el archivo *mi_aplicacion/admin.py* debemos *REGISTRAR* nuestro modelo de datos, para que el admin de django pueda procesar los datos.
     Esto lo lograremos de la siguiente forma:
@@ -295,7 +324,7 @@ Como buenos desarrolladores, ya debemos tener creado un repositorio para trabaja
     admin.site.register(MiClase2)
     ```
 
-13. **Creación de Serializadores**
+14. **Creación de Serializadores**
 
     La librería *rest_framework* que instalamos anteriormente, tiene la herramienta para serializar nuestro modelo de datos en formato *JSON*, lo que lograremos siguiendo estos pasos:
     - Primero crearemos un archivo *serializer.py* en el directorio de nuestra aplicación.
@@ -323,22 +352,57 @@ Como buenos desarrolladores, ya debemos tener creado un repositorio para trabaja
             # De esta forma nosotros decidimos qué atributos de nuestra clase/modelo se serializarán
     ```
 
-14. **Creación de Vistas CBV**
+15. **Creación de Vistas CBV**
 
     CBV es el acrónimo de Class Based View o *Vista Basada en Clase*, es una colección de vistas basadas en un modelo de datos y que nos permiten hacer *CRUD* de los datos de ese modelo.
     Las vistas basadas en clase se crearán dentro de *mi_aplicacion/views.py*, nuestro archivo controlador, siguiendo las siguientes instrucciones:
     - Importamos todos nuestros modelos de datos al archivo *views.py*.
-    - Junto con la importación de las clases, importamos nuestros serializadores, puesto que se ancargarán de dejar los datos en un formato que podramos usar en las vistas.
+    - Junto con la importación de las clases, importamos nuestros serializadores, puesto que se ancargarán de dejar los datos en un formato que podamos usar en las vistas.
     - con todo esto ya podemos crear nuestro *ViewSet*, o colección de vistas para trabajar con los datos del modelo desde Django Admin.
 
     El archivo debería quedar de la siguiente forma:
     ```
+    from rest_framework import serializers
+    from .models import MiClase, MiClase2
+
+    class MiClaseSerializer(serializers.ModelSerializer):
+        class Meta:
+            model = MiClase
+            fields = ('__all__')
+
+    class MiClase2Serializer(serializers.ModelSerializer):
+        class Meta:
+            model = MiClase2
+            fields = ('__all__')
 
     ```
     
-15. **Creación de Rutas**
+16. **Creación de Rutas**
 
-16. **Crear un Usuario Admin de Django**
+    Los ViewSet que creamos en el paso anterior generan todas las vistas y métodos para hacer el *CRUD* de nuestros datos, pero ahora necesitamos llegar hasta esos métodos, por lo que debemos generar las rutas necesarias.
+    - En el directorio de nuestra aplicación creamos un nuevo archivo *urls.py*, donde gestionaremos todas las rutas necesarias para nuestro modelo de datos completo.
+    - Dentro de este archivo, generaremos un objeto *enrutador* (routers.DefaultRouter) que se encargará de generar las rutas para los métodos mencionados. Para lograrlo usaremos el método *register* disponibles dentro del objeto enrutador. Este método recibe como primer argumento el nombre que le daremos al conjunto de rutas de un *ViewSet* y como segundo argumento le indicaremos cuál será el ViewSet que registraremos, quedando de la siguiente forma:
+        ```
+        from django.urls import path,include
+        from rest_framework import routers
+        from nombre_aplicacion import views
+
+        enrutador = routers.DefaultRouter()
+
+        enrutador.register(r'miclase', views.MiClaseSerializer)
+        enrutador.register(r'miclase2', views.MiClase2Serializer)
+
+        urlpatterns = [
+            path('', include(enrutador.urls))
+        ]
+        ```
+
+    - La *r* delante del string para generar la ruta es para evitar saltos de línea generados cuando se crea la ruta, los que impedirían que se alcance el *endpoint* de manera correcta.
+    - El *urlpatterns* incluirá todas las rutas generadas dentro del enrutador y será necesario para enviarlas a *motor_django/urls.py*.
+
+17. **Incorporación de rutas a Django**
+
+18. **Crear un Usuario Admin de Django**
 
     El usuario *ADMIN* de Django es el que tendrá control de la aplicación y de las vistas *CRUD* de nuestro modelo de datos.
     Para crearlo, ejecutaremos el siguiente comando mediante nuestro terminal:

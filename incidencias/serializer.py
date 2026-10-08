@@ -23,9 +23,9 @@ class PaisSerializer(serializers.ModelSerializer):
 class RegionSerializer(serializers.ModelSerializer):
     class Meta:
         model = Region
-        fields = ('codigo','region')
+        fields = ('id','codigo','region')
 
 class ProvinciaSerializer(serializers.ModelSerializer):
     class Meta:
         model = Provincia
-        fields = ('codigo','provincia','region')
+        fields = ('id','codigo','provincia','region')
