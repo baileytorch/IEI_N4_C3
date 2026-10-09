@@ -4,7 +4,7 @@
         "pk": 1,
         "fields": {
             "codigo": "01",
-            "region": "Región de Tarapacá"
+            "region": "Tarapacá"
         }
     },
     {
@@ -12,7 +12,7 @@
         "pk": 2,
         "fields": {
             "codigo": "02",
-            "region": "Región de Antofagasta"
+            "region": "Antofagasta"
         }
     },
     {
@@ -20,7 +20,7 @@
         "pk": 3,
         "fields": {
             "codigo": "03",
-            "region": "Región de Atacama"
+            "region": "Atacama"
         }
     },
     {
@@ -28,7 +28,7 @@
         "pk": 4,
         "fields": {
             "codigo": "04",
-            "region": "Región de Coquimbo"
+            "region": "Coquimbo"
         }
     },
     {
@@ -36,7 +36,7 @@
         "pk": 5,
         "fields": {
             "codigo": "05",
-            "region": "Región de Valparaíso"
+            "region": "Valparaíso"
         }
     },
     {
@@ -44,7 +44,7 @@
         "pk": 6,
         "fields": {
             "codigo": "06",
-            "region": "Región del Libertador General Bernardo O'Higgins"
+            "region": "Libertador General Bernardo O'"
         }
     },
     {
@@ -52,7 +52,7 @@
         "pk": 7,
         "fields": {
             "codigo": "07",
-            "region": "Región del Maule"
+            "region": "Maule"
         }
     },
     {
@@ -60,7 +60,7 @@
         "pk": 8,
         "fields": {
             "codigo": "08",
-            "region": "Región del Biobío"
+            "region": "Biobío"
         }
     },
     {
@@ -68,7 +68,7 @@
         "pk": 9,
         "fields": {
             "codigo": "09",
-            "region": "Región de La Araucanía"
+            "region": "La Araucanía"
         }
     },
     {
@@ -76,7 +76,7 @@
         "pk": 10,
         "fields": {
             "codigo": "10",
-            "region": "Región de Los Lagos"
+            "region": "Los Lagos"
         }
     },
     {
@@ -84,7 +84,7 @@
         "pk": 11,
         "fields": {
             "codigo": "11",
-            "region": "Región de Aysén del General Carlos Ibáñez del Campo"
+            "region": "Aysén del General Carlos Ibáñe"
         }
     },
     {
@@ -92,7 +92,7 @@
         "pk": 12,
         "fields": {
             "codigo": "12",
-            "region": "Región de Magallanes y de la Antártica Chilena"
+            "region": "Magallanes y de la Antártica C"
         }
     },
     {
@@ -100,7 +100,7 @@
         "pk": 13,
         "fields": {
             "codigo": "13",
-            "region": "Región Metropolitana de Santiago"
+            "region": "Metropolitana de Santiago"
         }
     },
     {
@@ -108,7 +108,7 @@
         "pk": 14,
         "fields": {
             "codigo": "14",
-            "region": "Región de Los Ríos"
+            "region": "Los Ríos"
         }
     },
     {
@@ -116,7 +116,7 @@
         "pk": 15,
         "fields": {
             "codigo": "15",
-            "region": "Región de Arica y Parinacota"
+            "region": "Arica y Parinacota"
         }
     },
     {
@@ -124,7 +124,7 @@
         "pk": 16,
         "fields": {
             "codigo": "16",
-            "region": "Región de Ñuble"
+            "region": "Ñuble"
         }
     }
 ]

@@ -112,6 +112,16 @@ Como buenos desarrolladores, ya debemos tener creado un repositorio para trabaja
     ```
 
     - En el directorio de nuestra app creamos un subdirectorio templates, donde pondremos nuestras vistas.
+    - Agrega la carpeta de templates a *settings.py*, añadiendo la siguiente línea dentro del apartado *TEMPLATES*: 
+        ```
+        TEMPLATES = [
+        {
+            'BACKEND': 'django.template.backends.django.DjangoTemplates',
+            'DIRS': [os.path.join(BASE_DIR, 'templates')]...
+            ...
+        }]
+        ```
+
     - Dentro de este subdiretorio *nombre_aplicacion/templates* creamos la vista HTML que será renderizada por el método creado anteriormente, la que llamaremos *bienvenida.html*.
     - Dentro de este archivo, pondremos el código HTML de nuestra página de bienvenida.
     - En el archivo *nombre_aplicacion/views.py* generamos el método que renderizará la vista creada:
@@ -156,7 +166,33 @@ Como buenos desarrolladores, ya debemos tener creado un repositorio para trabaja
         ALLOWED_HOSTS = ['localhost','127.0.0.1']
         ```
 
-        - Para que se muestre una página de error creada por nosotros, debemos tener un directorio *templates* en nuestra aplicación y dentro de ese directorio un archivo *html* de nombre *404*. Django buscará en este directorio ese archivo y lo cargará al no encontrar un recurso.
+        - Para que se muestre una página de error creada por nosotros, debemos tener en el directorio *templates* un archivo *html* de nombre *404.html*. Django buscará en este directorio ese archivo y lo cargará al no encontrar un recurso.
+
+    - Si *DEBUG = False*, Django renderizará nuestras páginas, pero no los archivos estáticos que deberían contener (CSS, JS, imágenes, etc.). Para que estos funcionen sin problemas, podemos resolverlo de 2 maneras:
+        - Iniciar el servidor con el apellido *--insecure*, quedando como sigue:
+        ```
+        python manage.py runserver --insecure
+        ```
+
+        - O podemos recolectar los archivos estáticos en un directorio *static*, de la siguiente manera:
+            - Asegurarnos que las rutas de los directorios estáticos estén configurados de manera correcta en *motor_django/settings.py*:
+            ```
+            import os
+
+            BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+
+            STATIC_URL = '/static/'
+            STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
+
+            STATICFILES_DIRS = [
+                os.path.join(BASE_DIR, 'static'),
+            ]
+            ```
+
+            - Ejecutar el comando *collectstatic* para que Django recolecte todos los archivos estáticos (incluyendo Bootstrap y archivos jQuery) y los ponga en *STATIC_ROOT*:
+            ```
+            python manage.py collectstatic
+            ```
 
 8. **Modelo de Datos**
     - Django controlará la base de datos mediante migraciones, scripts de bases de datos que modificarán la estructura de datos.
@@ -354,11 +390,11 @@ Como buenos desarrolladores, ya debemos tener creado un repositorio para trabaja
 
 15. **Creación de Vistas CBV**
 
-    CBV es el acrónimo de Class Based View o *Vista Basada en Clase*, es una colección de vistas basadas en un modelo de datos y que nos permiten hacer *CRUD* de los datos de ese modelo.
+    CBV es el acrónimo de Class Based View o *Vista Basada en Clase*, es una colección de vistas basadas en un modelo de datos y que nos permiten hacer *CRUD* de los datos de ese modelo con los métodos correspondientes *GET*, *POST*, *PUT/PATCH* y *DELETE*.
     Las vistas basadas en clase se crearán dentro de *mi_aplicacion/views.py*, nuestro archivo controlador, siguiendo las siguientes instrucciones:
     - Importamos todos nuestros modelos de datos al archivo *views.py*.
     - Junto con la importación de las clases, importamos nuestros serializadores, puesto que se ancargarán de dejar los datos en un formato que podamos usar en las vistas.
-    - con todo esto ya podemos crear nuestro *ViewSet*, o colección de vistas para trabajar con los datos del modelo desde Django Admin.
+    - con todo esto ya podemos crear nuestro *ViewSet*, o colección de vistas para trabajar con los datos del modelo.
 
     El archivo debería quedar de la siguiente forma:
     ```
@@ -381,7 +417,7 @@ Como buenos desarrolladores, ya debemos tener creado un repositorio para trabaja
 
     Los ViewSet que creamos en el paso anterior generan todas las vistas y métodos para hacer el *CRUD* de nuestros datos, pero ahora necesitamos llegar hasta esos métodos, por lo que debemos generar las rutas necesarias.
     - En el directorio de nuestra aplicación creamos un nuevo archivo *urls.py*, donde gestionaremos todas las rutas necesarias para nuestro modelo de datos completo.
-    - Dentro de este archivo, generaremos un objeto *enrutador* (routers.DefaultRouter) que se encargará de generar las rutas para los métodos mencionados. Para lograrlo usaremos el método *register* disponibles dentro del objeto enrutador. Este método recibe como primer argumento el nombre que le daremos al conjunto de rutas de un *ViewSet* y como segundo argumento le indicaremos cuál será el ViewSet que registraremos, quedando de la siguiente forma:
+    - Dentro de este archivo, generaremos un objeto *enrutador* (routers.DefaultRouter) que se encargará de generar las rutas para los métodos mencionados. Para lograrlo usaremos el método *register* disponible dentro del objeto enrutador. Este método recibe como primer argumento el nombre que le daremos al conjunto de rutas de un *ViewSet* y como segundo argumento le indicaremos cuál será el ViewSet que registraremos, quedando de la siguiente forma:
         ```
         from django.urls import path,include
         from rest_framework import routers
@@ -402,7 +438,26 @@ Como buenos desarrolladores, ya debemos tener creado un repositorio para trabaja
 
 17. **Incorporación de rutas a Django**
 
-18. **Crear un Usuario Admin de Django**
+    Ahora necesitamos llegar a todos estos *endpoints* desde la aplicación, por lo que incluiremos todas las rutas de nuestra aplicación en las rutas de Django.
+    El archivo debería quedar de la siguiente forma:
+        ```
+        from django.contrib import admin
+        from django.urls import path,include
+        from nombre_aplicacion import views
+
+        urlpatterns = [
+            path('admin/', admin.site.urls),
+            path('', views.inicio),
+            path('nombre_aplicacion/', include('nombre_aplicacion.urls'))
+        ]
+        ```
+    
+    Con todo lo anterior listo, ya podemos iniciar nuestro servidor y dirgirnos a *http://127.0.0.1:8000/nombre_aplicacion* para ver como todo nuestro modelo de datos usa las CBV para trabajar haciendo *CRUD* del mismo modelo.
+
+18. ****
+
+___
+**Crear un Usuario Admin de Django**
 
     El usuario *ADMIN* de Django es el que tendrá control de la aplicación y de las vistas *CRUD* de nuestro modelo de datos.
     Para crearlo, ejecutaremos el siguiente comando mediante nuestro terminal:
@@ -411,15 +466,14 @@ Como buenos desarrolladores, ya debemos tener creado un repositorio para trabaja
     ```
 
     Una vez que jecutamos el comando, este nos pedirá la información del usuario mediante el mismo terminal.
-
-
+   
 ___   
-> Para poder mantener las librerias actualizadas y estandarizadas para todo el equipo de desarrollo, crearemos un archivo de requerimientos con el siguiente comando:
+Para poder mantener las librerias actualizadas y estandarizadas para todo el equipo de desarrollo, crearemos un archivo de requerimientos con el siguiente comando:
 ```
 pip freeze > requirements.txt
 ```
 
-> Este archivo tendrá una lista de todas las librerías incluídas en nuestro *VENV*, la que podrá ser instalada en cualquier nuevo *VENV* ejecutando el siguiente comando:
+Este archivo tendrá una lista de todas las librerías incluídas en nuestro *VENV*, las que posteriormente podrán ser instaladas en cualquier nuevo *VENV* ejecutando el siguiente comando:
 ```
 pip install -r requirements.txt
 ```

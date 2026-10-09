@@ -21,5 +21,5 @@ from incidencias import views
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('', views.bienvenida, name='bienvenida'),
-    path('incidencias/',include('incidencias.urls'))
+    path('incidencias/', include('incidencias.urls'))
 ]
