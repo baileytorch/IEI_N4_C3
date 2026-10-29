@@ -1,22 +1,25 @@
 from django.shortcuts import render
+from django.views.generic import ListView
 from rest_framework import viewsets
 
-from .models import Pais, Region, Provincia, Comuna, Direccion, Biblioteca, Autor, Genero, SubGenero
-from .models import Editorial, Idioma, Edicion, Libro, Estado, Ubicacion, Inventario, Usuario, Prestamo
-
-from .serializer import PaisSerializer,RegionSerializer,ProvinciaSerializer
+from . import models as mod
+from . import serializer as ser
 
 def bienvenida(request):
     return render(request, 'bienvenida.html')
 
 class PaisViewSet(viewsets.ModelViewSet):
-    queryset = Pais.objects.all()
-    serializer_class = PaisSerializer
+    queryset = mod.Pais.objects.all()
+    serializer_class = ser.PaisSerializer
 
 class RegionViewSet(viewsets.ModelViewSet):
-    queryset = Region.objects.all()
-    serializer_class = RegionSerializer
+    queryset = mod.Region.objects.all()
+    serializer_class = ser.RegionSerializer
 
 class ProvinciaViewSet(viewsets.ModelViewSet):
-    queryset = Provincia.objects.all()
-    serializer_class = ProvinciaSerializer
+    queryset = mod.Provincia.objects.all()
+    serializer_class = ser.ProvinciaSerializer
+
+class AutorListView(ListView):
+    model = mod.Autor
+    template_name = 'incidencias/autores/lista_autores.html'

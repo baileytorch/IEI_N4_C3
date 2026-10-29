@@ -9,9 +9,12 @@
 
     <title>{% block title %}BiblioHub | Gestión de Biblioteca{% endblock %}</title>
 
-    <link rel="stylesheet" href="{% static 'css/bootstrap.css' %}">
+    <link rel="stylesheet" href="{% static 'css/darkly.css' %}">
+    <link rel="stylesheet" href="{% static 'css/datatables.css' %}">
 
     <script src="{% static 'js/bootstrap.bundle.js' %}"></script>
+    <script src="{% static 'js/jquery_v4.0.0.js' %}"></script>
+    <script src="{% static 'js/datatables.js' %}"></script>
 
     <link rel="shortcut icon" href="{% static 'images/bibliohub.png' %}" type="image/x-icon">
 
@@ -23,9 +26,9 @@
          NAVBAR
     ========================= -->
 
-    <header class="navbar">
+    <nav class="navbar navbar-expand-lg bg-primary" data-bs-theme="light">
 
-        <div class="brand">
+        <div class="col">
 
             <div class="brand-icon">
                 📚
@@ -36,22 +39,26 @@
         </div>
 
 
-        <nav class="nav-links">
+        <div class="nav-links">
 
             <a href="#">Inicio</a>
             <a href="#">Catálogo</a>
             <a href="#">Usuarios</a>
             <a href="#">Préstamos</a>
 
-        </nav>
+        </div>
 
-    </header>
+    </nav>
 
     <div class="container">
+        <br>
         {% block content %}
         {% endblock %}
     </div>
 
 </body>
+
+{% block scripts_pie %}
+{% endblock %}
 
 </html>

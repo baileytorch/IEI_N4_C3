@@ -1,0 +1,65 @@
+{% extends 'base.html' %}
+
+{% block title %}Listado de Autores{% endblock %}
+
+{% block content %}
+<h3>Listado de Autores</h3>
+
+<!-- <input type="text" name="" id="campoTexto" class="form-control">
+
+<button class="btn btn-primary" onclick="cargarDatos();" id="btnTexto">Ver Datos</button> -->
+
+<table class="table table-hover" id="tablaAutores">
+    <thead>
+        <th>Id</th>
+        <th>Nombre</th>
+        <th>Pseudónimo</th>
+        <th>Nacionalidad</th>
+        <th>Fecha Nacimiento</th>
+        <th>Fecha Defunción</th>
+    </thead>
+
+    <tbody>
+        {% for autor in object_list %}
+
+        <tr>
+            <td>{{ autor.id }}</td>
+            <td>{{ autor.nombre }}</td>
+            <td>{{ autor.pseudonimo }}</td>
+            <td>{{ autor.nacionalidad.nombre }}</td>
+            <td>{{ autor.fecha_nacimiento }}</td>
+            <td>{{ autor.fecha_defuncion }}</td>
+        </tr>
+        {% empty %}
+        <tr colspan="6">No se encontraron elementos en la lista.</tr>
+
+        {% endfor %}
+    </tbody>
+
+    <tfoot>
+        <th>Id</th>
+        <th>Nombre</th>
+        <th>Pseudónimo</th>
+        <th>Nacionalidad</th>
+        <th>Fecha Nacimiento</th>
+        <th>Fecha Defunción</th>
+    </tfoot>
+</table>
+
+{% endblock %}
+
+{% block scripts_pie %}
+<script>
+    new DataTable('#tablaAutores');
+
+    function cargarDatos() {
+        campoTexto = document.getElementById('campoTexto');
+        alert(campoTexto.value)
+    }
+
+    $('#btnTexto').on('click', function(){
+        alert($('#campoTexto').val())
+    })
+
+</script>
+{% endblock %}
