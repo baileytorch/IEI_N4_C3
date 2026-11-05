@@ -4,10 +4,10 @@
 
 {% block content %}
 <h3>Listado de Autores</h3>
+<br>
 
-<!-- <input type="text" name="" id="campoTexto" class="form-control">
-
-<button class="btn btn-primary" onclick="cargarDatos();" id="btnTexto">Ver Datos</button> -->
+<a href="{% url 'crear_autor' %}" class="btn btn-primary">Agregar Autor</a>
+<br>
 
 <table class="table table-hover" id="tablaAutores">
     <thead>
@@ -17,6 +17,7 @@
         <th>Nacionalidad</th>
         <th>Fecha Nacimiento</th>
         <th>Fecha Defunción</th>
+        <th>Habilitado</th>
     </thead>
 
     <tbody>
@@ -24,11 +25,12 @@
 
         <tr>
             <td>{{ autor.id }}</td>
-            <td>{{ autor.nombre }}</td>
-            <td>{{ autor.pseudonimo }}</td>
-            <td>{{ autor.nacionalidad.nombre }}</td>
-            <td>{{ autor.fecha_nacimiento }}</td>
-            <td>{{ autor.fecha_defuncion }}</td>
+            <td>{% if autor.nombre is not None %}{{ autor.nombre }}{% else %}--{% endif %}</td>
+            <td>{% if autor.pseudonimo is not None %}{{ autor.pseudonimo }}{% else %}--{% endif %}</td>
+            <td>{% if autor.nacionalidad is not None %}{{ autor.nacionalidad.nombre }}{% else %}--{% endif %}</td>
+            <td>{% if autor.fecha_nacimiento is not None %}{{ autor.fecha_nacimiento }}{% else %}--{% endif %}</td>
+            <td>{% if autor.fecha_defuncion is not None %}{{ autor.fecha_defuncion }}{% else %}--{% endif %}</td>
+            <td>{% if autor.habilitado %}Habilitado{% else %}Deshabilitado{% endif %}</td>
         </tr>
         {% empty %}
         <tr colspan="6">No se encontraron elementos en la lista.</tr>
@@ -43,6 +45,7 @@
         <th>Nacionalidad</th>
         <th>Fecha Nacimiento</th>
         <th>Fecha Defunción</th>
+        <th>Habilitado</th>
     </tfoot>
 </table>
 
@@ -50,16 +53,8 @@
 
 {% block scripts_pie %}
 <script>
-    new DataTable('#tablaAutores');
-
-    function cargarDatos() {
-        campoTexto = document.getElementById('campoTexto');
-        alert(campoTexto.value)
+    window.onload = function () {
+        new DataTable('#tablaAutores');
     }
-
-    $('#btnTexto').on('click', function(){
-        alert($('#campoTexto').val())
-    })
-
 </script>
 {% endblock %}

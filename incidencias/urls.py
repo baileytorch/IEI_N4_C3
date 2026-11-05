@@ -10,5 +10,6 @@ enrutador.register(r'provincias',views.ProvinciaViewSet)
 
 urlpatterns = [
     path('', include(enrutador.urls)),
-    path('autores/listado_autores', views.AutorListView.as_view(), name='listado_autores')
+    path('autores/listado_autores', views.AutorListView.as_view(), name='listado_autores'),
+    path('autores/crear_autor', views.AutorCreateView.as_view(), name='crear_autor')
 ]
