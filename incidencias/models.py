@@ -20,6 +20,10 @@ class Pais(models.Model):
     habilitado = models.BooleanField(int_habilitado,default=True,null=False)
     created_at = models.DateTimeField(fecha_creacion,auto_now_add=True)
     updated_at = models.DateTimeField(fecha_actualizacion,auto_now=True)
+    
+    def __str__(self):
+        return self.nombre + ' - ' + self.nacionalidad
+    
     class Meta:
         db_table_comment = "Información de paises del mundo, para asociar a autores y lectores."
 

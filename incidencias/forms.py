@@ -12,3 +12,20 @@ class AutorForm(forms.ModelForm):
             'fecha_defuncion',
             'biografia'
         ]
+        widgets = {
+            'nombre': forms.TextInput(
+                attrs = {
+                    'class': 'form-control'
+                }
+            ),
+            'pseudonimo': forms.TextInput(
+                attrs = {
+                    'class': 'form-control'
+                }
+            ),
+            'nacionalidad': forms.Select(
+                attrs = {
+                    'class': 'form-select'
+                }
+            )
+        }
