@@ -574,6 +574,221 @@ Como buenos desarrolladores, ya debemos tener creado un repositorio para trabaja
     - Con todo lo anterior, ya podemos iniciar nuestra aplicación, dirigirnos a: *http://127.0.0.1:8000/mi_aplicacion/* y comenzar a hacer _CRUD_ de nuestros modelos.
 
 20. **CRUD Manual**
+    En los pasos anteriores usamos _ViewSet_ de Django REST Framework para exponer un CRUD mediante una API. En este apartado construiremos las vistas tradicionales de Django para listar, crear, editar y consultar registros desde plantillas HTML. También agregaremos la opción de habilitar o deshabilitar un registro sin eliminarlo de la base de datos.
+
+    ### Crear los formularios
+
+    Crea el archivo _mi_aplicacion/forms.py_. Usaremos un _ModelForm_ para que Django genere el formulario de creación y edición a partir de los campos del modelo. Reemplaza los campos del ejemplo por los que existan en tu modelo. El campo _habilitado_ se gestiona por separado para evitar que se cambie desde el formulario de edición:
+
+        from django import forms
+        from .models import MiModelo
+
+        class MiModeloForm(forms.ModelForm):
+            class Meta:
+                model = MiModelo
+                fields = ['nombre', 'descripcion']
+                widgets = {
+                    'nombre': forms.TextInput(attrs={
+                        'class': 'form-control',
+                        'placeholder': 'Nombre del registro...'
+                    }),
+                    'descripcion': forms.Textarea(attrs={
+                        'class': 'form-control',
+                        'rows': 4
+                    })
+                }
+
+        class CambiarEstadoForm(forms.ModelForm):
+            class Meta:
+                model = MiModelo
+                fields = ['habilitado']
+
+    El campo _habilitado_ usado por _CambiarEstadoForm_ se agregará al modelo en el paso del método para deshabilitar o habilitar.
+
+    Los _widgets_ permiten definir cómo se representa cada campo en HTML y agregar clases de CSS, por ejemplo, las clases de Bootstrap.
+
+    ### Crear las vistas
+
+    En _mi_aplicacion/views.py_ importa las vistas genéricas, los formularios y el modelo. Luego, crea las vistas en el siguiente orden:
+
+    1. **ListView**
+
+       _ListView_ obtiene los registros del modelo y los entrega a una plantilla. Por defecto, la lista está disponible en _object_list_:
+
+           from django.views.generic import ListView
+           from .models import MiModelo
+
+           class RegistroListView(ListView):
+               model = MiModelo
+               template_name = 'mi_aplicacion/registros/lista_registros.html'
+
+    2. **CreateView**
+
+       _CreateView_ muestra y procesa el formulario de creación. Al guardarlo correctamente, redirige al listado:
+
+           from django.urls import reverse_lazy
+           from django.views.generic import CreateView
+           from .forms import MiModeloForm
+
+           class RegistroCreateView(CreateView):
+               model = MiModelo
+               form_class = MiModeloForm
+               template_name = 'mi_aplicacion/registros/crear_registro.html'
+               success_url = reverse_lazy('listado_registros')
+
+    3. **UpdateView**
+
+       _UpdateView_ localiza el registro mediante el parámetro _pk_ de la ruta, carga sus valores actuales en el formulario y guarda los cambios:
+
+           from django.views.generic import UpdateView
+
+           class RegistroUpdateView(UpdateView):
+               model = MiModelo
+               form_class = MiModeloForm
+               template_name = 'mi_aplicacion/registros/editar_registro.html'
+               success_url = reverse_lazy('listado_registros')
+
+    4. **Método para deshabilitar o habilitar**
+
+       Antes de crear esta vista, agrega a la clase de tu modelo en _mi_aplicacion/models.py_ un campo booleano. Así el registro se podrá deshabilitar sin eliminarlo de la base de datos:
+
+           habilitado = models.BooleanField(default=True)
+
+       Si el modelo ya tiene migraciones aplicadas, crea y aplica una migración desde el terminal con el ambiente virtual activado:
+
+           .\mi_ambiente\Scripts\Activate
+           python manage.py makemigrations
+           python manage.py migrate
+
+       Asegúrate de que _CambiarEstadoForm_ en _mi_aplicacion/forms.py_ incluya el campo _habilitado_. Luego crea la vista con _UpdateView_; el método _form_valid_ guarda el cambio y redirige al listado:
+
+           from django.shortcuts import redirect
+           from django.views.generic import UpdateView
+           from .forms import CambiarEstadoForm
+
+           class CambiarEstadoView(UpdateView):
+               model = MiModelo
+               form_class = CambiarEstadoForm
+
+               def form_valid(self, form):
+                   self.object = form.save()
+                   return redirect('listado_registros')
+
+       La vista también permite habilitar nuevamente un registro enviando _habilitado=True_.
+
+    5. **DetailView (opcional)**
+
+       Para consultar los datos de un registro individual, agrega _DetailView_. También busca el objeto mediante el parámetro _pk_:
+
+           from django.views.generic import DetailView
+
+           class RegistroDetailView(DetailView):
+               model = MiModelo
+               template_name = 'mi_aplicacion/registros/detalle_registro.html'
+               context_object_name = 'registro'
+
+    _success_url_ indica a dónde se redirige al usuario después de guardar. _reverse_lazy_ permite resolver la ruta por su nombre.
+
+    ### Crear las rutas
+
+    En _mi_aplicacion/urls.py_ agrega una ruta para cada vista. Las rutas de edición, detalle y cambio de estado reciben el identificador del registro:
+
+        from django.urls import path
+        from . import views
+
+        urlpatterns = [
+            path('registros/', views.RegistroListView.as_view(), name='listado_registros'),
+            path('registros/crear/', views.RegistroCreateView.as_view(), name='crear_registro'),
+            path('registros/<int:pk>/editar/', views.RegistroUpdateView.as_view(), name='editar_registro'),
+            path('registros/<int:pk>/detalle/', views.RegistroDetailView.as_view(), name='detalle_registro'),
+            path('registros/<int:pk>/cambiar_estado/', views.CambiarEstadoView.as_view(), name='cambiar_estado'),
+        ]
+
+    Verifica que _mi_aplicacion/urls.py_ esté incluido en _motor_django/urls.py_, tal como se explicó en el paso anterior.
+
+    ### Crear las plantillas
+
+    Crea el directorio _mi_aplicacion/templates/mi_aplicacion/registros/_ y dentro de él las plantillas indicadas en _template_name_. En la plantilla _lista_registros.html_, _ListView_ entrega los elementos mediante _object_list_:
+
+        <h3>Listado de registros</h3>
+        <a href="{% url 'crear_registro' %}">Agregar registro</a>
+
+        <table>
+            <thead>
+                <tr><th>Nombre</th><th>Estado</th><th>Acciones</th></tr>
+            </thead>
+            <tbody>
+                {% for registro in object_list %}
+                <tr>
+                    <td>{{ registro.nombre }}</td>
+                    <td>{% if registro.habilitado %}Habilitado{% else %}Deshabilitado{% endif %}</td>
+                    <td>
+                        <a href="{% url 'editar_registro' registro.pk %}">Editar</a>
+                        <a href="{% url 'detalle_registro' registro.pk %}">Ver detalle</a>
+                        {% if registro.habilitado %}
+                        <button type="button" class="cambiar-estado"
+                            data-url="{% url 'cambiar_estado' registro.pk %}"
+                            data-current="true">Deshabilitar</button>
+                        {% else %}
+                        <button type="button" class="cambiar-estado"
+                            data-url="{% url 'cambiar_estado' registro.pk %}"
+                            data-current="false">Habilitar</button>
+                        {% endif %}
+                    </td>
+                </tr>
+                {% empty %}
+                <tr><td colspan="3">No se encontraron registros.</td></tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        {% csrf_token %}
+
+        <script>
+            document.addEventListener('click', function (event) {
+                const button = event.target.closest('.cambiar-estado');
+                if (!button) return;
+
+                const nextState = button.dataset.current !== 'true';
+                const formData = new FormData();
+                formData.append('habilitado', nextState);
+
+                const csrfToken = document.querySelector('[name=csrfmiddlewaretoken]').value;
+                fetch(button.dataset.url, {
+                    method: 'POST',
+                    headers: {
+                        'X-CSRFToken': csrfToken,
+                        'X-Requested-With': 'XMLHttpRequest'
+                    },
+                    body: formData
+                })
+                    .then(response => {
+                        if (response.ok) {
+                            window.location.reload();
+                        } else {
+                            alert('No fue posible cambiar el estado del registro.');
+                        }
+                    })
+                    .catch(error => console.error('Error al cambiar el estado:', error));
+            });
+        </script>
+
+    El botón envía el estado contrario al actual mediante _fetch_ y una solicitud _POST_. _{% csrf_token %}_ genera el token que Django valida en el encabezado _X-CSRFToken_. Al guardar, _CambiarEstadoView_ actualiza el campo _habilitado_ y la página se recarga para mostrar el nuevo estado. Así, el registro permanece en la base de datos y puede habilitarse nuevamente.
+
+    Para las plantillas _crear_registro.html_ y _editar_registro.html_, puedes reutilizar un formulario HTML como el siguiente. Django muestra los campos del _ModelForm_; en la edición, _UpdateView_ los completa con los valores actuales:
+
+        <form method="post">
+            {% csrf_token %}
+            {{ form.as_p }}
+            <button type="submit">Guardar</button>
+        </form>
+
+    En _detalle_registro.html_ puedes mostrar los datos recibidos en la variable _registro_, definida en _context_object_name_ de _RegistroDetailView_:
+
+        <h3>{{ registro.nombre }}</h3>
+        <p>{{ registro.descripcion }}</p>
+        <p>{% if registro.habilitado %}Habilitado{% else %}Deshabilitado{% endif %}</p>
+
+    Puedes reemplazar el HTML sencillo de estos ejemplos por tus componentes y estilos, manteniendo las rutas, los nombres de los formularios y los campos correspondientes a tu modelo.
 
 21. **Inicio de Sesión con Django**
     El sistema de autenticación incluido con Django se centra en el modelo User, lo que permite manejar cuentas de usuario, permisos, y tareas esenciales como login, logout, y control de contraseñas.

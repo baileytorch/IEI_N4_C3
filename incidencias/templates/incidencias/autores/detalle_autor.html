@@ -1,0 +1,68 @@
+{% extends 'base.html' %}
+
+{% block title %}Detalle Autor{% endblock %}
+
+{% block content %}
+<h3>Detalle Autor</h3>
+<br>
+
+<div class="row">
+    <div class="container">
+        <div class="col">
+            <div class="card text-center">
+                <div class="card-header">
+                    <h3>{{ autor.nombre }}</h3>
+                </div>
+
+                <div class="card-body">
+                    <div class="card-text">
+                        <div class="row">
+                            <div class="col"><strong>Nacionalidad</strong></div>
+                            <div class="col"><strong>Fecha Nacimiento</strong></div>
+                            <div class="col"><strong>Fecha Defunción</strong></div>
+                            <div class="col"><strong>Estado</strong></div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col">
+                                {% if autor.nacionalidad %}{{ autor.nacionalidad }}{% else %}--{% endif %}
+                            </div>
+                            <div class="col">
+                                {% if autor.fecha_nacimiento %}{{ autor.fecha_nacimiento }}{% else %}--{% endif %}
+                            </div>
+                            <div class="col">
+                                {% if autor.fecha_defuncion %}{{ autor.fecha_defuncion }}{% else %}--{% endif %}
+                            </div>
+                            <div class="col">
+                                {% if autor.habilitado %}Habilitado{% else %}Deshabilitado{% endif %}
+                            </div>
+                        </div>
+                    </div>
+                    <br>
+
+                    <h5 class="card-title"><strong>Biografía</strong></h5>
+                    <p class="card-text">{{ autor.biografia }}</p>
+                    <br>
+                </div>
+
+                <div class="card-footer text-body-secondary">
+                    {% if autor.pseudonimo %}{{ autor.pseudonimo }}{% else %}--{% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<br>
+
+<div class="row">
+    <div class="col">
+        <a href="{% url 'listado_autores' %}" class="btn btn-primary">Volver</a>
+    </div>
+</div>
+
+{% endblock %}
+
+{% block scripts_pie %}
+<script>
+</script>
+{% endblock %}
