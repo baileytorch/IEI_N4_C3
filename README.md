@@ -571,41 +571,43 @@ Como buenos desarrolladores, ya debemos tener creado un repositorio para trabaja
       ]
       ```
 
-    - Con todo lo anterior, ya podemos iniciar nuestra aplicación, dirigirnos a: *http://127.0.0.1:8000/mi_aplicacion/* y comenzar a hacer _CRUD_ de nuestros modelos.
+    - Con todo lo anterior, ya podemos iniciar nuestra aplicación, dirigirnos a: *http://127.0.0.1:8000/mi_aplicacion/* y comenzar a hacer *CRUD* de nuestros modelos.
 
 20. **CRUD Manual**
-    En los pasos anteriores usamos _ViewSet_ de Django REST Framework para exponer un CRUD mediante una API. En este apartado construiremos las vistas tradicionales de Django para listar, crear, editar y consultar registros desde plantillas HTML. También agregaremos la opción de habilitar o deshabilitar un registro sin eliminarlo de la base de datos.
+
+    En los pasos anteriores usamos *ViewSet* de Django REST Framework para exponer un CRUD mediante una API. En este apartado construiremos las vistas tradicionales de Django para listar, crear, editar y consultar registros desde plantillas HTML. También agregaremos la opción de habilitar o deshabilitar un registro sin eliminarlo de la base de datos, lo que conocemos como eliminado lógico.
 
     ### Crear los formularios
 
-    Crea el archivo _mi_aplicacion/forms.py_. Usaremos un _ModelForm_ para que Django genere el formulario de creación y edición a partir de los campos del modelo. Reemplaza los campos del ejemplo por los que existan en tu modelo. El campo _habilitado_ se gestiona por separado para evitar que se cambie desde el formulario de edición:
+    Crea el archivo *mi_aplicacion/forms.py*. Usaremos un *ModelForm* para que Django genere el formulario de creación y edición a partir de los campos del modelo. En el siguiente ejercicios deberás reemplazar los campos del ejemplo por los que existan en tu modelo. Una consideración especial tendremos con el campo *habilitado*, el que se gestiona por separado para evitar que se cambie desde el formulario de edición:
 
-        from django import forms
-        from .models import MiModelo
+    ```
+    from django import forms
+    from .models import MiModelo
 
-        class MiModeloForm(forms.ModelForm):
-            class Meta:
-                model = MiModelo
-                fields = ['nombre', 'descripcion']
-                widgets = {
-                    'nombre': forms.TextInput(attrs={
-                        'class': 'form-control',
-                        'placeholder': 'Nombre del registro...'
-                    }),
-                    'descripcion': forms.Textarea(attrs={
-                        'class': 'form-control',
-                        'rows': 4
-                    })
-                }
+    class MiModeloForm(forms.ModelForm):
+      class Meta:
+        model = MiModelo
+        fields = ['nombre', 'descripcion']
+        widgets = {
+          'nombre': forms.TextInput(attrs={
+            'class': 'form-control',
+            'placeholder': 'Nombre del registro...'
+          }),
+          'descripcion': forms.Textarea(attrs={
+            'class': 'form-control',
+              'rows': 4
+            })
+          }
 
         class CambiarEstadoForm(forms.ModelForm):
-            class Meta:
-                model = MiModelo
-                fields = ['habilitado']
+          class Meta:
+            model = MiModelo
+            fields = ['habilitado']
+    ```
 
-    El campo _habilitado_ usado por _CambiarEstadoForm_ se agregará al modelo en el paso del método para deshabilitar o habilitar.
-
-    Los _widgets_ permiten definir cómo se representa cada campo en HTML y agregar clases de CSS, por ejemplo, las clases de Bootstrap.
+    Los *widgets* permiten definir cómo se representa cada campo en HTML y agregar clases CSS, por ejemplo, las clases de Bootstrap.
+    El campo *habilitado* será usado por un método que crearemos más adelante, *CambiarEstadoForm*, para deshabilitar o habilitar el objeto en cuestión.
 
     ### Crear las vistas
 
