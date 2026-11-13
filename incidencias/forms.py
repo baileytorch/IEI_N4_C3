@@ -1,7 +1,9 @@
 from django import forms
 from . import models as mo
 
-class AutorForm(forms.ModelForm):
+str_opcion = '-- Selecciona una opción --'
+
+class FormularioAutor(forms.ModelForm):
     class Meta:
         model = mo.Autor
         fields = [
@@ -55,13 +57,17 @@ class AutorForm(forms.ModelForm):
                 }
             )
         }
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.fields['nacionalidad'].empty_label = str_opcion
         
-class DeshabilitarAutorForm(forms.ModelForm):
+class FormularioCambiarEstadoAutor(forms.ModelForm):
     class Meta:
         model = mo.Autor
         fields = ['habilitado']
 
-class LibroForm(forms.ModelForm):
+class FormularioLibro(forms.ModelForm):
     class Meta:
         model = mo.Libro
         fields = [
@@ -107,8 +113,15 @@ class LibroForm(forms.ModelForm):
                 }
             )
         }
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.fields['autor'].empty_label = str_opcion
+        self.fields['subgenero'].empty_label = str_opcion
+        self.fields['edicion'].empty_label = str_opcion
+        self.fields['biblioteca'].empty_label = str_opcion
         
-class DeshabilitarLibroForm(forms.ModelForm):
+class FormularioCambiarEstadoLibro(forms.ModelForm):
     class Meta:
         model = mo.Autor
         fields = ['habilitado']

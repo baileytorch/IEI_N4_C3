@@ -24,29 +24,29 @@ class ProvinciaViewSet(viewsets.ModelViewSet):
     queryset = mod.Provincia.objects.all()
     serializer_class = ser.ProvinciaSerializer
 
-class AutorListView(ListView):
+class ListadoAutores(ListView):
     model = mod.Autor
     template_name = 'incidencias/autores/lista_autores.html'
     
-class AutorCreateView(CreateView):
-    form_class = fo.AutorForm
+class CrearAutor(CreateView):
+    form_class = fo.FormularioAutor
     model = mod.Autor
     success_url = 'listado_autores'
     template_name = 'incidencias/autores/crear_autor.html'
 
-class AutorUpdateView(UpdateView):
-    form_class = fo.AutorForm
+class ActualizarAutor(UpdateView):
+    form_class = fo.FormularioAutor
     model = mod.Autor
     success_url = reverse_lazy('listado_autores')
     template_name = 'incidencias/autores/editar_autor.html'
 
-class AutorDetailView(DetailView):
-    form_class = fo.AutorForm
+class DetalleAutor(DetailView):
+    form_class = fo.FormularioAutor
     model = mod.Autor
     template_name = 'incidencias/autores/detalle_autor.html'
 
-class CambiarAutorHabilitadoView(UpdateView):
-    form_class = fo.DeshabilitarAutorForm
+class CambiarEstadoAutor(UpdateView):
+    form_class = fo.FormularioCambiarEstadoAutor
     model = mod.Autor
     
     def form_valid(self, form):
@@ -56,29 +56,29 @@ class CambiarAutorHabilitadoView(UpdateView):
     def form_invalid(self, form):
         return redirect(self.request.META.get('HTTP_REFERER', '/'))
 
-class LibroListView(ListView):
+class ListadoLibros(ListView):
     model = mod.Libro
     template_name = 'incidencias/libros/lista_libros.html'
     
-class LibroCreateView(CreateView):
-    form_class = fo.LibroForm
+class CrearLibro(CreateView):
+    form_class = fo.FormularioLibro
     model = mod.Libro
     success_url = 'listado_libros'
     template_name = 'incidencias/libros/formulario_libro.html'
 
-class LibroUpdateView(UpdateView):
-    form_class = fo.LibroForm
+class ActualizarLibro(UpdateView):
+    form_class = fo.FormularioLibro
     model = mod.Libro
     success_url = reverse_lazy('listado_libros')
     template_name = 'incidencias/libros/formulario_libro.html'
 
-class LibroDetailView(DetailView):
-    form_class = fo.LibroForm
+class DetalleLibro(DetailView):
+    form_class = fo.FormularioLibro
     model = mod.Autor
     template_name = 'incidencias/libros/detalle_libro.html'
 
-class CambiarLibroHabilitadoView(UpdateView):
-    form_class = fo.DeshabilitarLibroForm
+class CambiarEstadoLibro(UpdateView):
+    form_class = fo.FormularioCambiarEstadoLibro
     model = mod.Libro
     
     def form_valid(self, form):

@@ -89,6 +89,10 @@ class Autor(models.Model):
     habilitado = models.BooleanField(int_habilitado,default=True,null=False,blank=False)
     created_at = models.DateTimeField(fecha_creacion,auto_now_add=True)
     updated_at = models.DateTimeField(fecha_actualizacion,auto_now=True)
+    
+    def __str__(self):
+        return f'{self.nombre} {' - ' + self.pseudonimo if self.pseudonimo else ''}'
+    
     class Meta:
         db_table_comment = "Datos de autores asociados a publicaciones/libros."
 
@@ -108,6 +112,10 @@ class SubGenero(models.Model):
     habilitado = models.BooleanField(int_habilitado,default=True,null=False,blank=False)
     created_at = models.DateTimeField(fecha_creacion,auto_now_add=True)
     updated_at = models.DateTimeField(fecha_actualizacion,auto_now=True)
+    
+    def __str__(self):
+        return self.subgenero
+    
     class Meta:
         db_table_comment = "Subgéneros literarios asociados a publicaciones/libros."
 
@@ -147,7 +155,7 @@ class Libro(models.Model):
     autor = models.ForeignKey(Autor,on_delete=models.CASCADE,null=False,blank=False)
     subgenero = models.ForeignKey(SubGenero,on_delete=models.CASCADE,null=False,blank=False)
     edicion = models.ForeignKey(Edicion,on_delete=models.CASCADE,null=False,blank=False)
-    biblioteca = models.ForeignKey(Biblioteca,on_delete=models.CASCADE,null=False,blank=False)
+    biblioteca = models.ForeignKey(Biblioteca,on_delete=models.CASCADE,null=True,blank=True)
     habilitado = models.BooleanField(int_habilitado,default=True,null=False,blank=False)
     created_at = models.DateTimeField(fecha_creacion,auto_now_add=True)
     updated_at = models.DateTimeField(fecha_actualizacion,auto_now=True)

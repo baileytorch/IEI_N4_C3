@@ -26,11 +26,11 @@
         {% for libro in object_list %}
         <tr>
             <td>{{ libro.id }}</td>
-            <td>{% if libro.nombre is not None %}{{ libro.nombre }}{% else %}--{% endif %}</td>
-            <td>{% if libro.pseudonimo is not None %}{{ libro.pseudonimo }}{% else %}--{% endif %}</td>
-            <td>{% if libro.nacionalidad is not None %}{{ libro.nacionalidad.nombre }}{% else %}--{% endif %}</td>
-            <td>{% if libro.fecha_nacimiento is not None %}{{ libro.fecha_nacimiento }}{% else %}--{% endif %}</td>
-            <td>{% if libro.fecha_defuncion is not None %}{{ libro.fecha_defuncion }}{% else %}--{% endif %}</td>
+            <td>{% if libro.titulo is not None %}{{ libro.titulo }}{% else %}--{% endif %}</td>
+            <td>{% if libro.paginas is not None %}{{ libro.paginas }}{% else %}--{% endif %}</td>
+            <td>{% if libro.autor is not None %}{{ libro.autor.nombre }}{% else %}--{% endif %}</td>
+            <td>{% if libro.subgenero is not None %}{{ libro.subgenero }}{% else %}--{% endif %}</td>
+            <td>{% if libro.edicion is not None %}{{ libro.edicion }}{% else %}--{% endif %}</td>
             <td>{% if libro.habilitado %}Habilitado{% else %}Deshabilitado{% endif %}</td>
             <td class="d-flex align-items-center gap-1">
                 <a href="{% url 'editar_libro' libro.id %}" class="btn btn-warning btn-sm" title="Editar Libro">
@@ -63,11 +63,11 @@
 
     <tfoot class="table-dark">
         <th>Id</th>
-        <th>Nombre</th>
-        <th>Pseudónimo</th>
-        <th>Nacionalidad</th>
-        <th>Fecha Nacimiento</th>
-        <th>Fecha Defunción</th>
+        <th>Título</th>
+        <th>Páginas</th>
+        <th>Autor</th>
+        <th>Género</th>
+        <th>Edición</th>
         <th>Habilitado</th>
         <th>Acciones</th>
     </tfoot>
@@ -79,7 +79,7 @@
 {% block scripts_pie %}
 <script>
     window.onload = function () {
-        new DataTable('#tablaLibroes');
+        new DataTable('#tablaLibros');
     }
 
     document.addEventListener('click', function (event) {
