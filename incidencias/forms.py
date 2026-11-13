@@ -60,3 +60,55 @@ class DeshabilitarAutorForm(forms.ModelForm):
     class Meta:
         model = mo.Autor
         fields = ['habilitado']
+
+class LibroForm(forms.ModelForm):
+    class Meta:
+        model = mo.Libro
+        fields = [
+            'titulo',
+            'paginas',
+            'autor',
+            'subgenero',
+            'edicion',
+            'biblioteca'
+        ]
+        widgets = {
+            'titulo': forms.TextInput(
+                attrs = {
+                    'type':'text',
+                    'class': 'form-control',
+                    'placeholder':'Título Libro...'
+                }
+            ),
+            'paginas': forms.NumberInput(
+                attrs = {
+                    'type':'number',
+                    'class': 'form-control'
+                }
+            ),
+            'autor': forms.Select(
+                attrs = {
+                    'class': 'form-select'
+                }
+            ),
+            'subgenero': forms.Select(
+                attrs = {
+                    'class': 'form-select'
+                }
+            ),
+            'edicion': forms.Select(
+                attrs = {
+                    'class': 'form-select'
+                }
+            ),
+            'biblioteca': forms.Select(
+                attrs = {
+                    'class': 'form-select'
+                }
+            )
+        }
+        
+class DeshabilitarLibroForm(forms.ModelForm):
+    class Meta:
+        model = mo.Autor
+        fields = ['habilitado']

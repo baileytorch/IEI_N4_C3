@@ -1,0 +1,120 @@
+{% extends 'base.html' %}
+
+{% block title %}Listado de Libros{% endblock %}
+
+{% block content %}
+<h3>Listado de Libros</h3>
+<br>
+
+<a href="{% url 'crear_libro' %}" class="btn btn-primary">Agregar Libro</a>
+<br>
+<br>
+
+<table class="table table-hover" id="tablaLibros">
+    <thead class="table-dark">
+        <th>Id</th>
+        <th>Título</th>
+        <th>Páginas</th>
+        <th>Autor</th>
+        <th>Género</th>
+        <th>Edición</th>
+        <th>Habilitado</th>
+        <th>Acciones</th>
+    </thead>
+
+    <tbody>
+        {% for libro in object_list %}
+        <tr>
+            <td>{{ libro.id }}</td>
+            <td>{% if libro.nombre is not None %}{{ libro.nombre }}{% else %}--{% endif %}</td>
+            <td>{% if libro.pseudonimo is not None %}{{ libro.pseudonimo }}{% else %}--{% endif %}</td>
+            <td>{% if libro.nacionalidad is not None %}{{ libro.nacionalidad.nombre }}{% else %}--{% endif %}</td>
+            <td>{% if libro.fecha_nacimiento is not None %}{{ libro.fecha_nacimiento }}{% else %}--{% endif %}</td>
+            <td>{% if libro.fecha_defuncion is not None %}{{ libro.fecha_defuncion }}{% else %}--{% endif %}</td>
+            <td>{% if libro.habilitado %}Habilitado{% else %}Deshabilitado{% endif %}</td>
+            <td class="d-flex align-items-center gap-1">
+                <a href="{% url 'editar_libro' libro.id %}" class="btn btn-warning btn-sm" title="Editar Libro">
+                    <i class="bi bi-pencil"></i>
+                </a>
+
+                {% if libro.habilitado %}
+                <button type="button" class="btn btn-danger btn-sm deshabilitar"
+                    data-url="{% url 'deshabilitar_libro' libro.id %}"
+                    data-current="{{ libro.habilitado|yesno:'true,false' }}" title="Deshabilitar Libro">
+                    <i class="bi bi-x-circle-fill"></i>
+                </button>
+                {% else %}
+                <button type="button" class="btn btn-success btn-sm deshabilitar"
+                    data-url="{% url 'deshabilitar_libro' libro.id %}"
+                    data-current="{{ libro.habilitado|yesno:'true,false' }}" title="Habilitar Libro">
+                    <i class="bi bi-check-circle-fill"></i>
+                </button>
+                {% endif %}
+
+                <a href="{% url 'detalle_libro' libro.id %}" class="btn btn-info btn-sm" title="Detalle Libro">
+                    <i class="bi bi-eye"></i>
+                </a>
+            </td>
+        </tr>
+        {% empty %}
+        <tr colspan="8">No se encontraron elementos en la lista.</tr>
+        {% endfor %}
+    </tbody>
+
+    <tfoot class="table-dark">
+        <th>Id</th>
+        <th>Nombre</th>
+        <th>Pseudónimo</th>
+        <th>Nacionalidad</th>
+        <th>Fecha Nacimiento</th>
+        <th>Fecha Defunción</th>
+        <th>Habilitado</th>
+        <th>Acciones</th>
+    </tfoot>
+</table>
+{% csrf_token %}
+
+{% endblock %}
+
+{% block scripts_pie %}
+<script>
+    window.onload = function () {
+        new DataTable('#tablaLibroes');
+    }
+
+    document.addEventListener('click', function (event) {
+        // Captura el botón o el icono interno
+        const button = event.target.closest('.deshabilitar');
+
+        if (button) {
+            const url = button.getAttribute('data-url');
+            const isCurrentlyEnabled = button.getAttribute('data-current') === 'true';
+
+            const nextState = !isCurrentlyEnabled;
+
+            const formData = new FormData();
+            formData.append('habilitado', nextState);
+
+            const csrfToken = document.querySelector('[name=csrfmiddlewaretoken]').value;
+
+            fetch(url, {
+                method: 'POST',
+                headers: {
+                    'X-CSRFToken': csrfToken,
+                    'X-Requested-With': 'XMLHttpRequest'
+                },
+                body: formData
+            })
+                .then(response => {
+                    if (response.ok) {
+                        window.location.reload();
+                    } else {
+                        alert('Ocurrió un error al actualizar el estado del libro.');
+                    }
+                })
+                .catch(error => console.error('Error:', error));
+        }
+    });
+
+</script>
+{% endblock %}

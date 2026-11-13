@@ -55,3 +55,35 @@ class CambiarAutorHabilitadoView(UpdateView):
 
     def form_invalid(self, form):
         return redirect(self.request.META.get('HTTP_REFERER', '/'))
+
+class LibroListView(ListView):
+    model = mod.Libro
+    template_name = 'incidencias/libros/lista_libros.html'
+    
+class LibroCreateView(CreateView):
+    form_class = fo.LibroForm
+    model = mod.Libro
+    success_url = 'listado_libros'
+    template_name = 'incidencias/libros/formulario_libro.html'
+
+class LibroUpdateView(UpdateView):
+    form_class = fo.LibroForm
+    model = mod.Libro
+    success_url = reverse_lazy('listado_libros')
+    template_name = 'incidencias/libros/formulario_libro.html'
+
+class LibroDetailView(DetailView):
+    form_class = fo.LibroForm
+    model = mod.Autor
+    template_name = 'incidencias/libros/detalle_libro.html'
+
+class CambiarLibroHabilitadoView(UpdateView):
+    form_class = fo.DeshabilitarLibroForm
+    model = mod.Libro
+    
+    def form_valid(self, form):
+        self.object = form.save()
+        return redirect(self.request.META.get('HTTP_REFERER', '/'))
+
+    def form_invalid(self, form):
+        return redirect(self.request.META.get('HTTP_REFERER', '/'))
